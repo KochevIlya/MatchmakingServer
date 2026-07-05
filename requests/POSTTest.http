@@ -1,0 +1,7 @@
+POST http://localhost:8080/api/players/join
+Content-Type: application/json
+
+{
+  "name": "Ilya_Web",
+  "mmr": 2600
+}

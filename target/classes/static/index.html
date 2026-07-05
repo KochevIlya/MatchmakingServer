@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Matchmaker Клиент</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 50px; background-color: #f4f4f9; }
+        .form-container { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); width: 300px; }
+        .input-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input { width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
+        button { width: 100%; padding: 10px; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; }
+        button:hover { background-color: #218838; }
+        #message { margin-top: 15px; font-weight: bold; color: #0056b3; }
+    </style>
+</head>
+<body>
+
+<div class="form-container">
+    <h2>Вход в очередь</h2>
+
+    <div class="input-group">
+        <label for="username">Имя игрока:</label>
+        <input type="text" id="username" placeholder="Например, Ilya_Pro" value="User">
+    </div>
+
+    <div class="input-group">
+        <label for="rating">Рейтинг (MMR):</label>
+        <input type="number" id="rating" placeholder="Например, 2500" value="1500">
+    </div>
+
+    <button onclick="joinQueue()">Встать в очередь</button>
+
+    <div id="message"></div>
+</div>
+
+<script>
+    function joinQueue() {
+        const nameInput = document.getElementById('username').value;
+        const mmrInput = parseInt(document.getElementById('rating').value);
+        const messageDiv = document.getElementById('message');
+
+        if (!nameInput) {
+            messageDiv.innerText = "Введите имя игрока!";
+            return;
+        }
+
+
+        const data = {
+            name: nameInput,
+            rating: mmrInput
+        };
+        console.log("Отправляем данные:", JSON.stringify(data));
+
+        fetch('/api/players/join', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.text())
+        .then(text => {
+            messageDiv.innerText = text
+            document.getElementById('username').value = nameInput;
+        })
+        .catch(error => {
+            messageDiv.innerText = "Ошибка отправки запроса.";
+            console.error('Error:', error);
+        });
+    }
+</script>
+
+</body>
+</html>
